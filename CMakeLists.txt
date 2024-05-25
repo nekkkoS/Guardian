@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR};${CMAKE_MODULE_PATH}")
 
-add_executable(Guardian main.cpp
+add_library(Guardian STATIC main.cpp
         Guardian/src/Guardian.cpp
         Guardian/inc/Guardian.hpp)
 
