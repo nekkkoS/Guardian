@@ -1,14 +1,18 @@
+#include <iostream>
+
 #include "Guardian/inc/Guardian.hpp"
 
-#include <iostream>
-#include <string>
-
 int main() {
+
     LicenseKeyGen::Guardian G;
-    if (std::string(FOO) == G.EncryptionGet()) {
-        std::cout << "Correct";
-    } else {
-        std::cout << "Incorrect";
+    if (std::string(LicenseKey) != G.EncryptionGet()) {
+        std::cout << "Fatal Error" << std::endl;
+        system("pause");
+        return 0;
     }
+
+    std::cout << "Success" << std::endl;
+    system("pause");
+
     return 0;
 }

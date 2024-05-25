@@ -202,7 +202,7 @@ namespace LicenseKeyGen {
         CryptoPP::SHA3_512 sha3_512;
         std::string output;
 
-        CryptoPP::StringSource SHA3(input, true, new CryptoPP::HashFilter(sha3_512, new CryptoPP::HexEncoder(
+        CryptoPP::StringSource SHA3(input, true, new CryptoPP::HashFilter(sha3_512,new CryptoPP::HexEncoder(
                 new CryptoPP::StringSink(output))));
         return output;
     }
@@ -247,7 +247,7 @@ namespace LicenseKeyGen {
         out << "[" << std::endl;
         /**
          * Ищет все .bin файлы в той же директории,
-         * для каждого генерирует megahash и записывает в json название файла и megahash
+         * для каждого генерирует хеш и записывает в json "название_файла": "хеш-значение"
          */
         for (const auto &entry: std::filesystem::directory_iterator(path)) {
             if (entry.path().extension() == ".bin") {
