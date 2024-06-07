@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <Windows.h>
+#include <winternl.h>
 #include <tchar.h>
 #include <string>
 #include <codecvt>
@@ -36,6 +37,11 @@ namespace LicenseKeyGen {
         WORD Handle;
     }*PSMBIOS_STRUCT_HEADER;
 
+    enum class HashingAlgorithms {
+        MD5,
+        SHA3_512
+    };
+
     class Guardian {
     public:
         Guardian();   // Получает данные из SMBIOS и записывает в m_data
@@ -53,9 +59,9 @@ namespace LicenseKeyGen {
         std::string MotherBoardSerial();
         std::string CpuID();
 
-        std::string EncryptionGet();
-        // Вычисляет хеш по алгоритму SHA3-512
-        std::string Encrypt(std::string& input);
+        std::string EncryptionGet(HashingAlgorithms hashingAlgorithm = HashingAlgorithms::SHA3_512);
+        // Вычисляет хеш по заданному алгоритму
+        std::string Encrypt(std::string& input, HashingAlgorithms hashingAlgorithm = HashingAlgorithms::SHA3_512);
         // Конкатенирует строковые значение хешей
         std::string HashesConcatenation(uint64_t cpuIdHash, uint64_t motherHash, uint64_t chassisHash, uint64_t systemUUIDHash);
 

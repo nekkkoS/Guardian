@@ -7,6 +7,7 @@
 #include <nlohmann/json.hpp>
 #include <cryptopp/sha3.h>
 #include <cryptopp/hex.h>
+#include <cryptopp/md5.h>
 
 namespace LicenseKeyGen {
 
@@ -192,19 +193,32 @@ namespace LicenseKeyGen {
         }
     }
 
-    std::string Guardian::EncryptionGet() {
+    std::string Guardian::EncryptionGet(HashingAlgorithms hashingAlgorithm) {
         std::string CompInfo = HashesConcatenation(CpuIDHash(), MotherBoardSerialHash(),
                                                    ChassisSerialHash(), SystemUUIDHash());
-        return Encrypt(CompInfo);
+        return Encrypt(CompInfo, hashingAlgorithm);
     }
 
-    std::string Guardian::Encrypt(std::string &input) {
-        CryptoPP::SHA3_512 sha3_512;
-        std::string output;
+    std::string Guardian::Encrypt(std::string &input, HashingAlgorithms hashingAlgorithm) {
+        if (hashingAlgorithm == HashingAlgorithms::SHA3_512) {
+            CryptoPP::SHA3_512 sha3_512;
+            std::string output;
 
-        CryptoPP::StringSource SHA3(input, true, new CryptoPP::HashFilter(sha3_512,new CryptoPP::HexEncoder(
-                new CryptoPP::StringSink(output))));
-        return output;
+            CryptoPP::StringSource(input, true,
+                                   new CryptoPP::HashFilter(sha3_512,new CryptoPP::HexEncoder(
+                                           new CryptoPP::StringSink(output))));
+            return output;
+        } else if (hashingAlgorithm == HashingAlgorithms::MD5) {
+            CryptoPP::MD5 md5;
+            std::string output;
+
+            CryptoPP::StringSource(input, true,
+                                   new CryptoPP::HashFilter(md5,
+                                                            new CryptoPP::HexEncoder(
+                                                                    new CryptoPP::StringSink(output))));
+
+            return output;
+        }
     }
 
     std::string Guardian::HashesConcatenation(uint64_t cpuIdHash, uint64_t motherHash, uint64_t chassisHash,
